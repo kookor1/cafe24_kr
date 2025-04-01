@@ -1,7 +1,6 @@
 (function () {
-    // 현재 로드된 <script> 태그들 중에서 geekstudio.js를 찾음
+    // geekstudio.js를 로드한 <script> 태그에서 client_id 추출
     const scripts = document.getElementsByTagName("script");
-
     let clientId = null;
 
     for (let script of scripts) {
@@ -12,13 +11,39 @@
         }
     }
 
-    // 결과 사용 예
-    if (clientId) {
-        console.log("✅ client_id:", clientId);
-
-        // 전역 변수로 노출하고 싶다면
-        window.__GEEKSTUDIO_CLIENT_ID__ = clientId;
-    } else {
-        console.warn("⚠️ client_id 쿼리 파라미터가 없습니다.");
+    if (!clientId) {
+        console.error("❌ client_id 쿼리 파라미터가 없습니다.");
+        return;
     }
+
+    // CAFE24API 초기화 및 실행
+    (function (CAFE24API) {
+        CAFE24API.getEncryptedMemberId(clientId, function (err, res) {
+            if (err) {
+                console.log("getEncryptedMemberId error:", err);
+            } else {
+                console.log("getEncryptedMemberId result:", res);
+            }
+        });
+
+        CAFE24API.getCustomerIDInfo(function (err, res) {
+            if (err) {
+                console.log("getCustomerIDInfo error:", err);
+            } else {
+                console.log("getCustomerIDInfo result:", res);
+            }
+        });
+
+        CAFE24API.getCustomerInfo(function (err, res) {
+            if (err) {
+                console.log("getCustomerInfo error:", err);
+            } else {
+                console.log("getCustomerInfo result:", res);
+            }
+        });
+
+    })(CAFE24API.init({
+        client_id: clientId,
+        // version: '2025-03-01' ← 필요시 명시 가능
+    }));
 })();
