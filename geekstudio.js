@@ -17,33 +17,27 @@
     }
 
     // CAFE24API 초기화 및 실행
-    (function (CAFE24API) {
-        CAFE24API.getEncryptedMemberId(clientId, function (err, res) {
-            if (err) {
-                console.log("getEncryptedMemberId error:", err);
-            } else {
-                console.log("getEncryptedMemberId result:", res);
-            }
+    (async function (CAFE24API) {window.DPromotionCafe24 = CAFE24API;
+        /*
+        const className = "dpromotion-area";
+        document.querySelectorAll(`.${className}`).forEach((el) => {
+            const appId = el.dataset.id;
+            const script = document.createElement("script");
+            script.src = `https://play.dpromotion.io/play/${appId}?use_type=script`;
+            el.appendChild(script);
         });
+        */
 
-        CAFE24API.getCustomerIDInfo(function (err, res) {
-            if (err) {
-                console.log("getCustomerIDInfo error:", err);
-            } else {
-                console.log("getCustomerIDInfo result:", res);
-            }
-        });
-
-        CAFE24API.getCustomerInfo(function (err, res) {
-            if (err) {
-                console.log("getCustomerInfo error:", err);
-            } else {
-                console.log("getCustomerInfo result:", res);
-            }
-        });
+        // 현재 timestamp (캐시 우회를 위한)
+        const timestamp = Date.now();
+        // geekstudio.js 파일을 body 맨 하단에 삽입
+        const geekScript = document.createElement("script");
+        geekScript.src = `https://cdn.jsdelivr.net/gh/kookor1/cafe24_kr/geekstudio.js?v=${timestamp}&client_id=${clientId}`;
+        geekScript.defer = true;
+        document.body.appendChild(geekScript);
 
     })(CAFE24API.init({
         client_id: clientId,
-        // version: '2025-03-01' ← 필요시 명시 가능
+        version: '2025-03-01', // ← 필요시 명시 가능
     }));
 })();
